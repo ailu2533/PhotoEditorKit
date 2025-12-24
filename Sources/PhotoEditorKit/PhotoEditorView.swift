@@ -1,7 +1,7 @@
 
 import SwiftUI
 
-struct PhotoEditorView: View {
+public struct PhotoEditorView: View {
     @State private var viewModel: PhotoEditorViewModel
 
     let onSave: (UIImage) -> Void
@@ -9,12 +9,12 @@ struct PhotoEditorView: View {
     @Environment(\.dismiss)
     private var dismiss
 
-    init(image: UIImage, onSave: @escaping (UIImage) -> Void) {
+    public init(image: UIImage, onSave: @escaping (UIImage) -> Void) {
         _viewModel = State(initialValue: PhotoEditorViewModel(originalImage: image))
         self.onSave = onSave
     }
 
-    var body: some View {
+    public var body: some View {
         NavigationView {
             VStack {
                 // Image Display Area

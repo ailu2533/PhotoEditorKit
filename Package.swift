@@ -24,8 +24,11 @@ let package = Package(
             name: "PhotoEditorKit",
             dependencies: [
                 .product(name: "GPUImage", package: "GPUImage3")
+            ],
+            swiftSettings: [
+                .enableUpcomingFeature("BareSlashRegexLiterals")
             ]
         ),
-
+       
     ]
 )
