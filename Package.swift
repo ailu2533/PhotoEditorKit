@@ -25,6 +25,9 @@ let package = Package(
             dependencies: [
                 .product(name: "GPUImage", package: "GPUImage3")
             ],
+            resources: [
+                .process("Resources")
+            ],
             swiftSettings: [
                 .enableUpcomingFeature("BareSlashRegexLiterals")
             ]

@@ -22,16 +22,16 @@ enum FilterOption: String, CaseIterable {
         }
     }
 
-    var title: LocalizedStringResource {
+    var title: String {
         switch self {
         case .brightness:
-            LocalizedStringResource("Brightness", bundle: .main)
+            String(localized: "Brightness", bundle: .module)
         case .contrast:
-            LocalizedStringResource("Contrast", bundle: .main)
+            String(localized: "Contrast", bundle: .module)
         case .saturation:
-            LocalizedStringResource("Saturation", bundle: .main)
+            String(localized: "Saturation", bundle: .module)
         case .sharpen:
-            LocalizedStringResource("Sharpen", bundle: .main)
+            String(localized: "Sharpen", bundle: .module)
         }
     }
 }

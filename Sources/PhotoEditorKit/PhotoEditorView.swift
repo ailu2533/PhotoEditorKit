@@ -30,8 +30,10 @@ public struct PhotoEditorView: View {
 //            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
+                    Button {
                         dismiss()
+                    } label: {
+                        Text("Cancel", bundle: .module)
                     }
                 }
 
@@ -40,7 +42,7 @@ public struct PhotoEditorView: View {
                         onSave(viewModel.processedImage)
                         dismiss()
                     } label: {
-                        Text("Save")
+                        Text("Save", bundle: .module)
                     }
                     .buttonStyle(.borderedProminent)
                 }
