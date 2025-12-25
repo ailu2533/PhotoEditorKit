@@ -18,6 +18,10 @@ actor ImageProcessingActor {
 /// A helper class to process images using Core Image filters
 @ImageProcessingActor
 class ImageFilterProcessor {
+    /// Reusable CIContext for better performance.
+    /// Creating a CIContext is expensive, so it's best to reuse it.
+    private static let context = CIContext()
+
     // MARK: - Filter Types
 
     enum FilterType {
@@ -44,8 +48,6 @@ class ImageFilterProcessor {
 
         let ciImage = CIImage(cgImage: cgImage)
         var currentImage = ciImage
-        
-        let context = CIContext()
 
         for filterType in filterTypes {
             switch filterType {
