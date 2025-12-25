@@ -5,7 +5,8 @@
 //  Created by Lu Ai on 2025/11/17.
 //
 
-import GPUImage
+import CoreImage
+import CoreImage.CIFilterBuiltins
 import UIKit
 
 /// Global actor for isolating image processing operations
@@ -14,7 +15,7 @@ actor ImageProcessingActor {
     static let shared = ImageProcessingActor()
 }
 
-/// A helper class to process images using GPUImage3 filters
+/// A helper class to process images using Core Image filters
 @ImageProcessingActor
 class ImageFilterProcessor {
     // MARK: - Filter Types
@@ -31,7 +32,7 @@ class ImageFilterProcessor {
 
     // MARK: - Processing Methods
 
-    /// Apply multiple filters in a GPU pipeline (single pass)
+    /// Apply multiple filters using Core Image
     static func applyFilters(_ filterTypes: [FilterType], to image: UIImage) -> UIImage? {
         guard !filterTypes.isEmpty else {
             return image
@@ -41,80 +42,74 @@ class ImageFilterProcessor {
             return nil
         }
 
-        // Create input
-        let pictureInput = PictureInput(image: cgImage)
+        let ciImage = CIImage(cgImage: cgImage)
+        var currentImage = ciImage
+        
+        let context = CIContext()
 
-        // Create output
-        let pictureOutput = PictureOutput()
-
-        // Variable to track the last source in the chain
-        var lastSource: ImageSource = pictureInput
-
-        // Build the chain dynamically
-        for (index, filterType) in filterTypes.enumerated() {
+        for filterType in filterTypes {
             switch filterType {
             case let .brightness(value):
-                let filter = BrightnessAdjustment()
+                let filter = CIFilter.colorControls()
+                filter.inputImage = currentImage
                 filter.brightness = value
-                lastSource --> filter
-                lastSource = filter
+                if let output = filter.outputImage {
+                    currentImage = output
+                }
 
             case let .contrast(value):
-                let filter = ContrastAdjustment()
+                let filter = CIFilter.colorControls()
+                filter.inputImage = currentImage
                 filter.contrast = value
-                lastSource --> filter
-                lastSource = filter
+                if let output = filter.outputImage {
+                    currentImage = output
+                }
 
             case let .saturation(value):
-                let filter = SaturationAdjustment()
+                let filter = CIFilter.colorControls()
+                filter.inputImage = currentImage
                 filter.saturation = value
-                lastSource --> filter
-                lastSource = filter
+                if let output = filter.outputImage {
+                    currentImage = output
+                }
 
             case let .gaussianBlur(radius):
-                let filter = GaussianBlur()
-                filter.blurRadiusInPixels = radius
-                lastSource --> filter
-                lastSource = filter
+                let filter = CIFilter.gaussianBlur()
+                filter.inputImage = currentImage
+                filter.radius = radius
+                if let output = filter.outputImage {
+                    currentImage = output.cropped(to: ciImage.extent)
+                }
 
             case let .sharpen(sharpness):
-                let filter = Sharpen()
+                let filter = CIFilter.sharpenLuminance()
+                filter.inputImage = currentImage
                 filter.sharpness = sharpness
-                lastSource --> filter
-                lastSource = filter
+                if let output = filter.outputImage {
+                    currentImage = output
+                }
 
             case let .sepia(intensity):
-                let filter = SepiaToneFilter()
+                let filter = CIFilter.sepiaTone()
+                filter.inputImage = currentImage
                 filter.intensity = intensity
-                lastSource --> filter
-                lastSource = filter
+                if let output = filter.outputImage {
+                    currentImage = output
+                }
 
             case .grayscale:
-                let filter = Luminance()
-                lastSource --> filter
-                lastSource = filter
+                let filter = CIFilter.photoEffectMono()
+                filter.inputImage = currentImage
+                if let output = filter.outputImage {
+                    currentImage = output
+                }
             }
         }
 
-        // Connect the last filter to output
-        lastSource --> pictureOutput
-
-        // Variable to capture the filtered image
-        var filteredImage: UIImage?
-
-        // Set up callback to capture the image
-        pictureOutput.imageAvailableCallback = { image in
-            filteredImage = image
-        }
-
-        // Process the entire pipeline synchronously (single GPU pass)
-        pictureInput.processImage(synchronously: true)
-
-        // Check if we got the filtered image
-        guard let result = filteredImage else {
+        guard let resultCGImage = context.createCGImage(currentImage, from: currentImage.extent) else {
             return nil
         }
 
-        return result
+        return UIImage(cgImage: resultCGImage, scale: image.scale, orientation: image.imageOrientation)
     }
 }

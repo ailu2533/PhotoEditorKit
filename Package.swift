@@ -15,7 +15,6 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/BradLarson/GPUImage3.git", branch: "main")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -23,7 +22,6 @@ let package = Package(
         .target(
             name: "PhotoEditorKit",
             dependencies: [
-                .product(name: "GPUImage", package: "GPUImage3")
             ],
             resources: [
                 .process("Resources")
