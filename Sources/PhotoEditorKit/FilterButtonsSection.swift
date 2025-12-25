@@ -20,9 +20,9 @@ struct FilterButtonsSection: View {
             case .saturation:
                 GeneralSlider(viewModel: viewModel, filter: FilterOption.saturation, value: $viewModel.saturation, range: -100 ... 100)
             case .sharpen:
-                GeneralSlider(viewModel: viewModel, filter: FilterOption.sharpen, value: $viewModel.sharpness, range: -100 ... 100)
+                GeneralSlider(viewModel: viewModel, filter: FilterOption.sharpen, value: $viewModel.sharpness, range: 0 ... 100)
             case .none:
-                GeneralSlider(viewModel: viewModel, filter: FilterOption.sharpen, value: $viewModel.sharpness, range: -100 ... 100)
+                GeneralSlider(viewModel: viewModel, filter: FilterOption.sharpen, value: $viewModel.sharpness, range: 0 ... 100)
                     .opacity(0)
             }
 

@@ -47,9 +47,9 @@ class PhotoEditorViewModel {
 
     // MARK: - Parameter Mapping
 
-    /// Map brightness from -100...100 to -1.0...1.0
+    /// Map brightness from -100...100 to -2.0...2.0 EV
     private func mapBrightness(_ value: Int) -> Float {
-        Float(value) / 100.0
+        Float(value) / 50.0
     }
 
     /// Map contrast from -100...100 to 0.0...4.0 (0 maps to 1.0)
@@ -74,9 +74,11 @@ class PhotoEditorViewModel {
         }
     }
 
-    /// Map sharpness from -100...100 to -4.0...4.0
+    /// Map sharpness from 0...100 to 0.0...2.0
     private func mapSharpness(_ value: Int) -> Float {
-        Float(value) / 100.0 * 4.0
+        // Ensure value is non-negative
+        let clampedValue = max(0, value)
+        return Float(clampedValue) / 100.0 * 2.0
     }
 
     /// Process the image with cumulative filters

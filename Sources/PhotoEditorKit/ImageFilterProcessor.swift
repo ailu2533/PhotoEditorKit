@@ -52,9 +52,12 @@ class ImageFilterProcessor {
         for filterType in filterTypes {
             switch filterType {
             case let .brightness(value):
-                let filter = CIFilter.colorControls()
+                // Use ExposureAdjust instead of ColorControls.brightness
+                // Brightness (additive) washes out the image by lifting blacks.
+                // Exposure (multiplicative) preserves contrast and feels more natural.
+                let filter = CIFilter.exposureAdjust()
                 filter.inputImage = currentImage
-                filter.brightness = value
+                filter.ev = value
                 if let output = filter.outputImage {
                     currentImage = output
                 }
