@@ -18,7 +18,7 @@ struct FilterButton: View {
                 Image(systemName: filter.icon)
                     .font(.title2)
 
-                Text(filter.rawValue)
+                Text(filter.title)
                     .font(.caption)
             }
             .foregroundColor(isSelected ? .accentColor : .primary)
